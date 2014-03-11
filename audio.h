@@ -3,7 +3,7 @@
 #include "jack.h"
 #include "config.h"
 
-#define MAXLINE  44100
+#define MAXLINE  10000
 #define MAXSOUNDS 256
 #define ROUNDOFF 128
 
@@ -55,6 +55,7 @@ typedef struct t_node {
   float  end;
   float  velocity;
   double formant_history[CHANNELS][10];
+  double reverb_history[CHANNELS][44100];
   int    formant_vowelnum;
   float  cutoff;
   float  resonance;

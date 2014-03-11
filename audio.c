@@ -159,6 +159,24 @@ float formant_filter(float in, t_sound *sound, int channel) {
   return res;
 }
 
+float reverb(float in, t_sound *sound, int channel){
+
+  float res = in;
+
+  /*
+  for (int i = 1; i < 10000 - 1; ++i){
+    sound->reverb_history[channel][i] = sound->reverb_history[channel][i-1] * 0.1;
+  }
+
+  sound->reverb_history[channel][0] = in*0.1;
+
+  for (int i = 0; i < 10000; ++i){
+    res += (float)sound->reverb_history[channel][i];
+  }
+  */
+  return in;
+}
+
 void init_vcf (t_sound *sound) {
   for (int channel = 0; channel < CHANNELS; ++channel) {
     t_vcf *vcf = &(sound->vcf[channel]);
@@ -470,7 +488,6 @@ float compressdave(float in) {
 }
 
 /**/
-
 void playback(float **buffers, int frame, jack_nframes_t frametime) {
   int channel;
   t_sound *p = playing;
@@ -559,6 +576,9 @@ void playback(float **buffers, int frame, jack_nframes_t frametime) {
       if (p->shape) {
         value = (1+p->shape_k)*value/(1+p->shape_k*fabs(value));
       }
+
+      value = reverb(value, p, 0);
+      printf("val: %f\n", value);
 
       value *= roundoff;
 
@@ -677,6 +697,8 @@ extern int audio_callback(int frames, float *input, float **outputs) {
 #endif
     dequeue(now + frames);
   }
+
+
   return(0);
 }
 
